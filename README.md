@@ -1,1 +1,1 @@
-# pacman
+# pacman-ai
