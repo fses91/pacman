@@ -98,7 +98,6 @@ def depthFirstSearch(problem):
 
     return final_route[::-1]
 
-
 def generalDepthFirstSearch(problem, actions, visited, current_state):
 
     if problem.isGoalState(current_state):
@@ -121,12 +120,43 @@ def generalDepthFirstSearch(problem, actions, visited, current_state):
     return 0
 
 def breadthFirstSearch(problem):
-  """
-  Search the shallowest nodes in the search tree first.
-  [2nd Edition: p 73, 3rd Edition: p 82]
-  """
-  "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+    """
+    Search the shallowest nodes in the search tree first.
+    [2nd Edition: p 73, 3rd Edition: p 82]
+    """
+    node_queue = util.Queue()
+    visited = []
+
+    start_state = problem.getStartState()
+    visited.append(start_state)
+
+    for (s, _, _) in problem.getSuccessors(start_state):
+        node_queue.push(s)
+
+    route = generalBreadthFirstSearch(problem, node_queue, visited, start_state)
+
+    final_route = []
+    if route != 0:
+        while not route.isEmpty():
+            final_route.append(route.pop())
+
+    return final_route[::-1]
+
+
+
+def generalBreadthFirstSearch(problem, node_queue, visited, current_state):
+
+    while not node_queue.isEmpty():
+        node = node_queue.pop()
+        state = node[0]
+        action = node[1]
+
+        if problem.isGoalState(state):
+            return [state]
+
+
+
+
       
 def uniformCostSearch(problem):
   "Search the node of least total cost first. "
