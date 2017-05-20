@@ -177,44 +177,43 @@ def uniformCostSearch(problem):
     start_state = problem.getStartState()
     visited.append(start_state)
     for node in problem.getSuccessors(start_state):
-        queue.push((node, start_state), node[2])
+        queue.push(node, node[2])
 
-    route = generalUniformCostSearch(problem, queue, visited)
+    target_node, parents = generalUniformCostSearch(problem, queue, {}, visited)
+
     final_route = []
-    if route != 0:
-        for ((s, a, c), p) in route:
-            final_route.append(a)
+    current_node = target_node
+    while current_node in parents:
+        final_route.append(current_node[1])
+        current_node = parents[current_node]
 
+    final_route.append(current_node[1])
     return final_route[::-1]
 
 
-def generalUniformCostSearch(problem, queue, visited):
+def generalUniformCostSearch(problem, queue, parents, visited):
 
     current_node = queue.pop()
-    current_state = current_node[0][0]
+    current_state = current_node[0]
+    current_costs = current_node[2]
+
     if problem.isGoalState(current_state):
-        return current_node
+        return current_node, parents
     else:
-        parent = current_node[0]
-        parent_state = parent[0]
-        parent_cost = parent[2]
-        successors = problem.getSuccessors(parent_state)
+        successors = problem.getSuccessors(current_state)
         for child in successors:
             child_state = child[0]
-            child_cost = child[2]
+            child_costs = child[2]
             if child_state in visited:
                 continue
             visited.append(child_state)
-            queue.push((child, parent), child_cost + parent_cost)
+            parents[child] = current_node
+            queue.push(child, current_costs + child_costs)
 
-    route = generalUniformCostSearch(problem, queue, visited)
-    if route == 0:
-        return 0
-
-
+    route = generalUniformCostSearch(problem, queue, parents, visited)
+    if route != 0:
+        return route
     return 0
-
-
 
 def nullHeuristic(state, problem=None):
   """
