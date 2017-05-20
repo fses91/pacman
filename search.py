@@ -129,12 +129,10 @@ def breadthFirstSearch(problem):
 
     start_state = problem.getStartState()
     visited.append(start_state)
-
     for node in problem.getSuccessors(start_state):
         queue.push((node, start_state))
 
     route = generalBreadthFirstSearch(problem, queue, visited)
-
     final_route = []
     if route != 0:
         for ((s, a, c), p) in route:
@@ -162,108 +160,61 @@ def generalBreadthFirstSearch(problem, queue, visited):
                 new_queue.push((node, s))
 
     route = generalBreadthFirstSearch(problem, new_queue, visited)
+    if route == 0:
+        return 0
     parent_state = route[-1][1]
     for ((s, a, c), p) in current_level:
         if parent_state == s:
             route.append(((s, a, c), p))
             return route
     return 0
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    #new_queue = util.Queue()
-    #nodes_on_level = []
-#
-    #while not queue.isEmpty():
-    #    node = queue.pop()
-    #    nodes_on_level.append(node)
-    #    for (s, a, c) in problem.getSuccessors(node[0]):
-    #        if problem.isGoalState(s):
-    #            return [s], [a]
-    #        else:
-    #            if s in visited:
-    #                continue
-    #            new_queue.push((s, a, c))
-    #            visited.append(s)
-#
-    #states, actions = generalBreadthFirstSearch(problem, new_queue, visited)
-#
-    #if states != 0 and actions != 0:
-    #    last_state = states[-1]
-    #    successors =
-#
-#
-    #return 0, 0
-
-
-
-    #successors = problem.getSuccessors(current_state)
-#
-    #for node in successors:
-    #    state = node[0]
-    #    action = node[1]
-    #    if problem.isGoalState(state):
-    #        return [action]
-    #    else:
-    #        if state in visited:
-    #            continue
-    #        queue.push((state, action))
-    #        visited.append(state)
-#
-    #while not queue.isEmpty():
-    #    node = queue.pop()
-    #    state = node[0]
-    #    action = node[1]
-    #    route = generalBreadthFirstSearch(problem, state, queue, visited)
-    #    if route != 0:
-    #        route.append(action)
-    #        return route
-#
-    #return 0
-
       
 def uniformCostSearch(problem):
-  "Search the node of least total cost first. "
-  "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+    "Search the node of least total cost first. "
+    queue = util.PriorityQueue()
+    visited = []
+
+    start_state = problem.getStartState()
+    visited.append(start_state)
+    for node in problem.getSuccessors(start_state):
+        queue.push((node, start_state), node[2])
+
+    route = generalUniformCostSearch(problem, queue, visited)
+    final_route = []
+    if route != 0:
+        for ((s, a, c), p) in route:
+            final_route.append(a)
+
+    return final_route[::-1]
+
+
+def generalUniformCostSearch(problem, queue, visited):
+
+    current_node = queue.pop()
+    current_state = current_node[0][0]
+    if problem.isGoalState(current_state):
+        return current_node
+    else:
+        parent = current_node[0]
+        parent_state = parent[0]
+        parent_cost = parent[2]
+        successors = problem.getSuccessors(parent_state)
+        for child in successors:
+            child_state = child[0]
+            child_cost = child[2]
+            if child_state in visited:
+                continue
+            visited.append(child_state)
+            queue.push((child, parent), child_cost + parent_cost)
+
+    route = generalUniformCostSearch(problem, queue, visited)
+    if route == 0:
+        return 0
+
+
+    return 0
+
+
 
 def nullHeuristic(state, problem=None):
   """
