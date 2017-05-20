@@ -65,7 +65,8 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s,s,w,s,w,w,s,w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem):
     """
@@ -98,6 +99,7 @@ def depthFirstSearch(problem):
 
     return final_route[::-1]
 
+
 def generalDepthFirstSearch(problem, actions, visited, current_state):
 
     if problem.isGoalState(current_state):
@@ -118,6 +120,7 @@ def generalDepthFirstSearch(problem, actions, visited, current_state):
         actions.pop()
 
     return 0
+
 
 def breadthFirstSearch(problem):
     """
@@ -168,9 +171,11 @@ def generalBreadthFirstSearch(problem, queue, visited):
             route.append(((s, a, c), p))
             return route
     return 0
-      
+
+
 def uniformCostSearch(problem):
     "Search the node of least total cost first. "
+
     queue = util.PriorityQueue()
     visited = []
 
@@ -215,6 +220,7 @@ def generalUniformCostSearch(problem, queue, parents, visited):
         return route
     return 0
 
+
 def nullHeuristic(state, problem=None):
   """
   A heuristic function estimates the cost from the current state to the nearest
@@ -222,10 +228,10 @@ def nullHeuristic(state, problem=None):
   """
   return 0
 
+
 def aStarSearch(problem, heuristic=nullHeuristic):
-  "Search the node that has the lowest combined cost and heuristic first."
-  "*** YOUR CODE HERE ***"
-  util.raiseNotDefined()
+    "Search the node that has the lowest combined cost and heuristic first."
+
     
   
 # Abbreviations
