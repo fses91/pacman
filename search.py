@@ -131,55 +131,107 @@ def breadthFirstSearch(problem):
     visited.append(start_state)
 
     for node in problem.getSuccessors(start_state):
-        queue.push(node)
+        queue.push((node, start_state))
 
     route = generalBreadthFirstSearch(problem, queue, visited)
 
     final_route = []
     if route != 0:
-        while not route.isEmpty():
-            final_route.append(route.pop())
+        for ((s, a, c), p) in route:
+            final_route.append(a)
 
     return final_route[::-1]
 
 
-
-#def generalBreadthFirstSearch(problem, state_queue, visited, current_state):
-#
-#    successors = problem.getSuccessors(current_state)
-#
-#    for (state, action, _) in successors:
-#        if problem.isGoalState(state):
-#            return [action]
-#        visited.append(state)
-#        state_queue.push(action)
-#
-#    while not state_queue.isEmpty():
-#        generalBreadthFirstSearch(problem, state_queue, visited, state_queue.pop())
-from game import Directions
 def generalBreadthFirstSearch(problem, queue, visited):
 
     new_queue = util.Queue()
+    current_level = []
 
     while not queue.isEmpty():
-        node = queue.pop()
-        for (s, a, c) in problem.getSuccessors(node[0]):
-            if problem.isGoalState(s):
-                return [s], [a]
-            else:
-                if s in visited:
-                    continue
-                new_queue.push((s, a, c))
-                visited.append(s)
+        ((s, a, c), p) = queue.pop()
+        current_level.append(((s, a, c), p))
+        if problem.isGoalState(s):
+            return [((s, a, c), p)]
+        else:
+            if s in visited:
+                continue
+            visited.append(s)
+            successors = problem.getSuccessors(s)
+            for node in successors:
+                new_queue.push((node, s))
 
-    states, actions = generalBreadthFirstSearch(problem, new_queue, visited)
+    route = generalBreadthFirstSearch(problem, new_queue, visited)
+    parent_state = route[-1][1]
+    for ((s, a, c), p) in current_level:
+        if parent_state == s:
+            route.append(((s, a, c), p))
+            return route
+    return 0
 
-    if states != 0 and actions != 0:
-        last_state = states[-1]
-        successors =
 
 
-    return 0, 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #new_queue = util.Queue()
+    #nodes_on_level = []
+#
+    #while not queue.isEmpty():
+    #    node = queue.pop()
+    #    nodes_on_level.append(node)
+    #    for (s, a, c) in problem.getSuccessors(node[0]):
+    #        if problem.isGoalState(s):
+    #            return [s], [a]
+    #        else:
+    #            if s in visited:
+    #                continue
+    #            new_queue.push((s, a, c))
+    #            visited.append(s)
+#
+    #states, actions = generalBreadthFirstSearch(problem, new_queue, visited)
+#
+    #if states != 0 and actions != 0:
+    #    last_state = states[-1]
+    #    successors =
+#
+#
+    #return 0, 0
 
 
 
