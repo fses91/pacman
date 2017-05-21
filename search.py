@@ -101,7 +101,8 @@ def depthFirstSearch(problem):
 
 
 def generalDepthFirstSearch(problem, actions, visited, current_state):
-
+    """Help function for DepthFirstSearch
+    """
     if problem.isGoalState(current_state):
         return actions
 
@@ -145,7 +146,8 @@ def breadthFirstSearch(problem):
 
 
 def generalBreadthFirstSearch(problem, queue, visited):
-
+    """Help function for BreadthFirstSearch
+    """
     new_queue = util.Queue()
     current_level = []
 
@@ -197,7 +199,8 @@ def uniformCostSearch(problem):
 
 
 def generalUniformCostSearch(problem, queue, parents, visited):
-
+    """Help function for UniformCostSearch
+    """
     current_node = queue.pop()
     current_state = current_node[0]
     current_costs = current_node[2]
@@ -253,6 +256,8 @@ def aStarSearch(problem, heuristic=nullHeuristic):
 
 
 def generalAStarSearch(problem, queue, parents, visited, heuristic):
+    """Help function for AStarSearch
+    """
     current_node = queue.pop()
     current_state = current_node[0]
 
