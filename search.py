@@ -222,17 +222,56 @@ def generalUniformCostSearch(problem, queue, parents, visited):
 
 
 def nullHeuristic(state, problem=None):
-  """
-  A heuristic function estimates the cost from the current state to the nearest
-  goal in the provided SearchProblem.  This heuristic is trivial.
-  """
-  return 0
+    """
+    A heuristic function estimates the cost from the current state to the nearest
+    goal in the provided SearchProblem.  This heuristic is trivial.
+    """
+    return 0
 
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     "Search the node that has the lowest combined cost and heuristic first."
 
-    
+    queue = util.PriorityQueue()
+    visited = []
+
+    start_state = problem.getStartState()
+    visited.append(start_state)
+    for node in problem.getSuccessors(start_state):
+        queue.push(node, node[2])
+
+    target_node, parents = generalAStarSearch(problem, queue, {}, visited, heuristic)
+
+    final_route = []
+    current_node = target_node
+    while current_node in parents:
+        final_route.append(current_node[1])
+        current_node = parents[current_node]
+
+    final_route.append(current_node[1])
+    return final_route[::-1]
+
+
+def generalAStarSearch(problem, queue, parents, visited, heuristic):
+    current_node = queue.pop()
+    current_state = current_node[0]
+
+    if problem.isGoalState(current_state):
+        return current_node, parents
+    else:
+        successors = problem.getSuccessors(current_state)
+        for child in successors:
+            child_state = child[0]
+            if child_state in visited:
+                continue
+            visited.append(child_state)
+            parents[child] = current_node
+            queue.push(child, heuristic(child_state, problem))
+
+    route = generalAStarSearch(problem, queue, parents, visited, heuristic)
+    if route != 0:
+        return route
+    return 0
   
 # Abbreviations
 bfs = breadthFirstSearch
