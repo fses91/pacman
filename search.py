@@ -14,40 +14,40 @@ by Pacman agents (in searchAgents.py).
 import util
 
 class SearchProblem:
-  """
-  This class outlines the structure of a search problem, but doesn't implement
-  any of the methods (in object-oriented terminology: an abstract class).
-  
-  You do not need to change anything in this class, ever.
-  """
-
-  def getStartState(self):
-     """
-     Returns the start state for the search problem 
-     """
-     util.raiseNotDefined()
-
-  def isGoalState(self, state):
-     """
-       state: Search state
+    """
+    This class outlines the structure of a search problem, but doesn't implement
+    any of the methods (in object-oriented terminology: an abstract class).
     
-     Returns True if and only if the state is a valid goal state
-     """
-     util.raiseNotDefined()
+    You do not need to change anything in this class, ever.
+    """
 
-  def getSuccessors(self, state):
-     """
-       state: Search state
-     
-     For a given state, this should return a list of triples, 
-     (successor, action, stepCost), where 'successor' is a 
-     successor to the current state, 'action' is the action
-     required to get there, and 'stepCost' is the incremental 
-     cost of expanding to that successor
-     """
-     util.raiseNotDefined()
+    def getStartState(self):
+       """
+       Returns the start state for the search problem 
+       """
+       util.raiseNotDefined()
 
-  def getCostOfActions(self, actions):
+    def isGoalState(self, state):
+       """
+         state: Search state
+      
+       Returns True if and only if the state is a valid goal state
+       """
+       util.raiseNotDefined()
+
+    def getSuccessors(self, state):
+       """
+         state: Search state
+       
+       For a given state, this should return a list of triples, 
+       (successor, action, stepCost), where 'successor' is a 
+       successor to the current state, 'action' is the action
+       required to get there, and 'stepCost' is the incremental 
+       cost of expanding to that successor
+       """
+       util.raiseNotDefined()
+
+    def getCostOfActions(self, actions):
      """
       actions: A list of actions to take
  
@@ -129,14 +129,14 @@ def breadthFirstSearch(problem):
     [2nd Edition: p 73, 3rd Edition: p 82]
     """
     queue = util.Queue()
-    visited = []
+    problem.visited = []
 
     start_state = problem.getStartState()
-    visited.append(start_state)
+    problem.visited.append(start_state)
     for node in problem.getSuccessors(start_state):
         queue.push((node, start_state))
 
-    route = generalBreadthFirstSearch(problem, queue, visited)
+    route = generalBreadthFirstSearch(problem, queue)
     final_route = []
     if route != 0:
         for ((s, a, c), p) in route:
@@ -145,7 +145,7 @@ def breadthFirstSearch(problem):
     return final_route[::-1]
 
 
-def generalBreadthFirstSearch(problem, queue, visited):
+def generalBreadthFirstSearch(problem, queue):
     """Help function for BreadthFirstSearch
     """
     new_queue = util.Queue()
@@ -157,14 +157,14 @@ def generalBreadthFirstSearch(problem, queue, visited):
         if problem.isGoalState(s):
             return [((s, a, c), p)]
         else:
-            if s in visited:
+            if s in problem.visited:
                 continue
-            visited.append(s)
+            problem.visited.append(s)
             successors = problem.getSuccessors(s)
             for node in successors:
                 new_queue.push((node, s))
 
-    route = generalBreadthFirstSearch(problem, new_queue, visited)
+    route = generalBreadthFirstSearch(problem, new_queue)
     if route == 0:
         return 0
     parent_state = route[-1][1]
@@ -233,8 +233,8 @@ def nullHeuristic(state, problem=None):
 
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    "Search the node that has the lowest combined cost and heuristic first."
-
+    """Search the node that has the lowest combined cost and heuristic first.
+    """
     queue = util.PriorityQueue()
     visited = []
 
