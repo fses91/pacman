@@ -176,52 +176,24 @@ def generalBreadthFirstSearch(problem, queue):
 
 
 def uniformCostSearch(problem):
-    "Search the node of least total cost first. "
-
-    queue = util.PriorityQueue()
-    visited = []
-
-    start_state = problem.getStartState()
-    visited.append(start_state)
-    for node in problem.getSuccessors(start_state):
-        queue.push(node, node[2])
-
-    target_node, parents = generalUniformCostSearch(problem, queue, {}, visited)
-
-    final_route = []
-    current_node = target_node
-    while current_node in parents:
-        final_route.append(current_node[1])
-        current_node = parents[current_node]
-
-    final_route.append(current_node[1])
-    return final_route[::-1]
-
-
-def generalUniformCostSearch(problem, queue, parents, visited):
-    """Help function for UniformCostSearch
+    """Search the node of least total cost first. 
+    Implementation: https://github.com/kalys/edx-ai-project1/blob/master/search.py
     """
-    current_node = queue.pop()
-    current_state = current_node[0]
-    current_costs = current_node[2]
+    frontier = util.PriorityQueue()
+    explored = []
 
-    if problem.isGoalState(current_state):
-        return current_node, parents
-    else:
-        successors = problem.getSuccessors(current_state)
-        for child in successors:
-            child_state = child[0]
-            child_costs = child[2]
-            if child_state in visited:
-                continue
-            visited.append(child_state)
-            parents[child] = current_node
-            queue.push(child, current_costs + child_costs)
+    frontier.push((problem.getStartState(), []), 0)
+    while not frontier.isEmpty():
+        node, actions = frontier.pop()
+        if problem.isGoalState(node):
+            return actions
+        explored.append(node)
 
-    route = generalUniformCostSearch(problem, queue, parents, visited)
-    if route != 0:
-        return route
-    return 0
+        for coord, direction, steps in problem.getSuccessors(node):
+            if not coord in explored:
+                new_actions = actions + [direction]
+                frontier.push((coord, new_actions), problem.getCostOfActions(new_actions))
+    return []
 
 
 def nullHeuristic(state, problem=None):
@@ -234,49 +206,24 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first.
+    Implementation: https://github.com/kalys/edx-ai-project1/blob/master/search.py
     """
-    queue = util.PriorityQueue()
-    visited = []
+    explored = []
+    frontier = util.PriorityQueue()
+    start = problem.getStartState()
+    frontier.push((start, []), heuristic(problem.getStartState(), problem))
+    while not frontier.isEmpty():
+        node, actions = frontier.pop()
+        if problem.isGoalState(node):
+            return actions
+        explored.append(node)
 
-    start_state = problem.getStartState()
-    visited.append(start_state)
-    for node in problem.getSuccessors(start_state):
-        queue.push(node, node[2])
-
-    target_node, parents = generalAStarSearch(problem, queue, {}, visited, heuristic)
-
-    final_route = []
-    current_node = target_node
-    while current_node in parents:
-        final_route.append(current_node[1])
-        current_node = parents[current_node]
-
-    final_route.append(current_node[1])
-    return final_route[::-1]
-
-
-def generalAStarSearch(problem, queue, parents, visited, heuristic):
-    """Help function for AStarSearch
-    """
-    current_node = queue.pop()
-    current_state = current_node[0]
-
-    if problem.isGoalState(current_state):
-        return current_node, parents
-    else:
-        successors = problem.getSuccessors(current_state)
-        for child in successors:
-            child_state = child[0]
-            if child_state in visited:
-                continue
-            visited.append(child_state)
-            parents[child] = current_node
-            queue.push(child, heuristic(child_state, problem))
-
-    route = generalAStarSearch(problem, queue, parents, visited, heuristic)
-    if route != 0:
-        return route
-    return 0
+        for coord, direction, cost in problem.getSuccessors(node):
+            if coord not in explored:
+                new_actions = actions + [direction]
+                score = problem.getCostOfActions(new_actions) + heuristic(coord, problem)
+                frontier.push((coord, new_actions), score)
+    return []
   
 # Abbreviations
 bfs = breadthFirstSearch
